@@ -16,11 +16,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "_lint": "eslint --config ./.eslintrc.json --ext js --ext jsx",
+    "_lint": "eslint src/**/*.{js,jsx} --config ./.eslintrc.json",
     "lint": "npm run _lint -- ./src/",
     "lint:fix": "npm run _lint -- --fix ./src/",
-    "format": "prettier --write './**/*.{js,jsx,css,scss,md,json}' --config ./.prettierrc",
-    "prepare": "husky install"
+    "format": "prettier --write src/**/*.{js,jsx,css,module.css}",
+    "prepare": "cd .. && husky install client/.husky"
   },
   "eslintConfig": {
     "extends": [
@@ -54,8 +54,9 @@
     "prettier": "^2.7.1"
   },
   "lint-staged": {
-    "src/**/*.{js,ts,jsx,tsx}": [
-      "eslint --config ./.eslintrc.json --ext js --ext jsx"
+    "*.(js|jsx)": [
+      "npm run format",
+      "npm run _lint"
     ]
   }
 }
