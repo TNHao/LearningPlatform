@@ -6,6 +6,7 @@
   "singleQuote": true,
   "htmlWhitespaceSensitivity": "ignore",
   "quoteProps": "as-needed",
+  "endOfLine": "auto",
   "overrides": [
     {
       "files": "*.css",
