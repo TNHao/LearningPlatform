@@ -17,7 +17,7 @@ import {
     InstagramOutlined,
     GithubOutlined,
 } from '@ant-design/icons'
-import signinbg from '../assets/images/img-signin.jpg'
+
 
 function onChange(checked) {
     console.log(`switch to ${checked}`)
@@ -61,8 +61,8 @@ export default function SignIn() {
                     </Menu>
                 </div>
             </Header>
-            <Content className="signin header-solid">
-                <Row gutter={[24, 0]} justify="space-around">
+            <Content className="signin header-solid signin-bg">
+                <Row gutter={[24, 0]} justify="space-around" className="signin-content-height">
                     <Col
                         xs={{ span: 24, offset: 0 }}
                         lg={{ span: 6, offset: 2 }}
@@ -131,15 +131,6 @@ export default function SignIn() {
                                     </Link> */}
                             </p>
                         </Form>
-                    </Col>
-                    <Col
-                        className="sign-img"
-                        style={{ padding: 12 }}
-                        xs={{ span: 24 }}
-                        lg={{ span: 12 }}
-                        md={{ span: 12 }}
-                    >
-                        <img src={signinbg} alt="" />
                     </Col>
                 </Row>
             </Content>
