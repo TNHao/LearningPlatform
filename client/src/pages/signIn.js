@@ -1,5 +1,5 @@
-// import { Link } from "react-router-dom";
 import React from 'react'
+import { Link } from "react-router-dom";
 import {
     Layout,
     Menu,
@@ -61,7 +61,7 @@ export default function SignIn() {
                     </Menu>
                 </div>
             </Header>
-            <Content className="signin">
+            <Content className="signin header-solid">
                 <Row gutter={[24, 0]} justify="space-around">
                     <Col
                         xs={{ span: 24, offset: 0 }}
