@@ -1,5 +1,10 @@
-import React from 'react';
+import React from 'react'
+import SignIn from './pages/signIn'
+import 'antd/dist/antd.css'
+import './assets/styles/main.css'
+import './assets/styles/responsive.css'
+import SignUp from './pages/signUp'
 
-const App = () => <div />;
-
-export default App;
+export default function App() {
+    return <SignUp />
+}
