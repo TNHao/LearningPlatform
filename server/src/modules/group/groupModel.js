@@ -142,3 +142,21 @@ export const findGroupByMemberId = async (memberId, callbacks) => {
     return error;
   }
 };
+
+/**
+ *
+ * @param {ObjectId} groupId
+ * @param {ObjectId} userId
+ * @param {{success: (data) => void, error: (e) => void}} callbacks
+ * @returns updated group info
+ */
+ export const findGroupById = async (groupId, userId, callbacks) => {
+  try {
+    const updatedGroup = await Group.findOne({ _id: groupId, members: { $elemMatch: { detail: userId } } });
+    callbacks?.success(updatedGroup);
+    return updatedGroup;
+  } catch (error) {
+    callbacks?.error(error);
+    return error;
+  }
+};
