@@ -12,12 +12,10 @@ import {
   updateMemberRole,
   removeMember,
 } from "./groupModel.js";
+import { findUserById, findUserByEmail } from "../user/userModel.js";
 
-// Import Util
-// import generatorCode from '../../util/generatorCode.js';
-// import htmlEntities from '../../util/htmlEntity.js';
-// import emailSender from '../../util/emailSender.js';
-// import { checkRole, checkRoles } from '../../util/accessChecker.js';
+// Import Service
+import { sendInvitationMail } from "../../services/email/index.js";
 
 /**
  * Get All Group
@@ -94,25 +92,56 @@ export const postCreate = async (req, res) => {
   const { name, userId } = req.body;
 
   try {
-    createGroup({
-      name: name,
-      members: [
-        {
-          detail: userId,
-          role: 1,
-        },
-      ],
-    }, {
-      success: (group) => {
-        res.status(200).json({ success: true, data: group });
+    createGroup(
+      {
+        name: name,
+        members: [
+          {
+            detail: userId,
+            role: "owner",
+          },
+        ],
       },
-      error: (e) => {
-        console.log(e);
-        res
-          .status(500)
-          .json({ success: false, message: "Internal server error" });
+      {
+        success: (group) => {
+          res.status(200).json({ success: true, data: group });
+        },
+        error: (e) => {
+          console.log(e);
+          res
+            .status(500)
+            .json({ success: false, message: "Internal server error" });
+        },
       }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+/**
+ * POST Invite Member
+ * @param req
+ * @param res
+ * @returns void
+ */
+export const postInvite = async (req, res) => {
+  const { groupId, userId, emails } = req.body;
+  try {
+    findUserById(userId, {
+      success: (owner) => {
+        emails.forEach((email) => {
+          // var genLink = req.protocol + "://" + req.get("host") + `/groups/invite/group=${groupId}&email=${user.email}&code=${code}`;
+          // sendInvitationMail(owner.email, group.name, user.email, genLink);
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+      },
     });
+    res.status(200).json({ success: true, message: "Invited successful" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -134,7 +163,6 @@ export const putUpdate = async (req, res) => {
     //     .status(403)
     //     .json({ success: false, message: "Permission denied" });
     // }
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -149,7 +177,6 @@ export const putUpdate = async (req, res) => {
  */
 export const deleteRemove = async (req, res) => {
   try {
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });

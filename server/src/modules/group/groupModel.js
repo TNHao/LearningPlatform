@@ -7,7 +7,11 @@ const schema = new Schema(
     members: [
       {
         detail: { type: Schema.Types.ObjectId, ref: "user", require: true },
-        role: { type: Schema.Types.Number, require: true },
+        role: {
+          type: Schema.Types.String,
+          require: true,
+          enum: ["owner", "co-owner", "member"],
+        },
         _id: false,
       },
     ],
@@ -30,7 +34,7 @@ export const createGroup = async (groupInfo, callbacks) => {
     return group;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -51,14 +55,14 @@ export const updateGroupInfo = async (groupInfo, callbacks) => {
     return group;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
 /**
  *
  * @param {ObjectId} groupId
- * @param {{detail: memberId, role: new role}} memberInfo
+ * @param {{detail: memberId, role: ["owner", "co-owner", "member"]}} memberInfo
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated group info
  */
@@ -73,7 +77,7 @@ export const addMember = async (groupId, memberInfo, callbacks) => {
     return group;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -95,14 +99,14 @@ export const removeMember = async (groupId, memberId, callbacks) => {
     return group;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
 /**
  *
  * @param {ObjectId} groupId
- * @param {{detail: memberId, role: new role}} memberInfo
+ * @param {{detail: memberId, role: ["owner", "co-owner", "member"]}} memberInfo
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated group info
  */
@@ -120,7 +124,7 @@ export const updateMemberRole = async (groupId, memberInfo, callbacks) => {
     return updatedGroup;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -139,7 +143,7 @@ export const findGroupByMemberId = async (memberId, callbacks) => {
     return groups;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -150,13 +154,16 @@ export const findGroupByMemberId = async (memberId, callbacks) => {
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated group info
  */
- export const findGroupById = async (groupId, userId, callbacks) => {
+export const findGroupById = async (groupId, userId, callbacks) => {
   try {
-    const updatedGroup = await Group.findOne({ _id: groupId, members: { $elemMatch: { detail: userId } } });
-    callbacks?.success(updatedGroup);
-    return updatedGroup;
+    const group = await Group.findOne({
+      _id: groupId,
+      members: { $elemMatch: { detail: userId } }
+    });
+    callbacks?.success(group);
+    return group;
   } catch (error) {
     callbacks?.error(error);
-    return error;
+    throw error;
   }
 };
