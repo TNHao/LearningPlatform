@@ -14,14 +14,24 @@ router.get("/", GroupController.getAllByUserId);
 router.get("/:id", GroupController.getOne);
 
 // @route POST /
+// @desc Member join group
+// @access All
+router.get("/:id/invitation-url", GroupController.getInviteUrl);
+
+// @route POST /
 // @desc Create Group
 // @access Private and role ADMINISTRATOR
 router.post("/", GroupController.postCreate);
 
+// @route POST /
+// @desc Member join group
+// @access All
+router.post("/:id/join-group", GroupController.postJoinGroup);
+
 // @route POST /invite
 // @desc Invite Member
 // @access Private and role ADMINISTRATOR
-router.post("/invite", GroupController.postInvite)
+router.post("/invite", GroupController.postInvite);
 
 // verify invitation
 // remove menber
@@ -36,5 +46,10 @@ router.put("/", GroupController.putUpdate);
 // @desc Delete Group
 // @access Private and role ADMINISTRATOR
 router.delete("/:id", GroupController.deleteRemove);
+
+// @route DELETE /:id
+// @desc Delete Group
+// @access Private and role ADMINISTRATOR
+router.delete("/:id/remove-member", GroupController.deleteRemoveMember);
 
 module.exports = router;

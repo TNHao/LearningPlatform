@@ -16,6 +16,11 @@ import { findUserById, findUserByEmail } from "../user/userModel.js";
 
 // Import Service
 import { sendInvitationMail } from "../../services/email/index.js";
+import {
+  createUrl,
+  getUrlDetail,
+  isUrlValid,
+} from "../invitation/invitationModel.js";
 
 /**
  * Get All Group
@@ -138,7 +143,9 @@ export const postInvite = async (req, res) => {
       },
       error: (error) => {
         console.log(error);
-        return res.status(500).json({ success: false, message: "Internal server error" });
+        return res
+          .status(500)
+          .json({ success: false, message: "Internal server error" });
       },
     });
     res.status(200).json({ success: true, message: "Invited successful" });
@@ -181,4 +188,75 @@ export const deleteRemove = async (req, res) => {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
+};
+
+export const postJoinGroup = async (req, res) => {
+  const { id: groupId } = req.params;
+  const { userEmail, inviteKey: key } = req.body;
+  const { userId } = req.body;
+
+  try {
+    const { isValid } = await isUrlValid({ key, userEmail });
+
+    if (!isValid) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Invite link is invalid" });
+    }
+
+    addMember(
+      groupId,
+      { detail: userId, role: "member" },
+      {
+        success: (group) => {
+          res.status(200).json({ success: true, data: group });
+        },
+        error: (e) => {
+          console.log(e);
+          res
+            .status(500)
+            .json({ success: false, message: "Internal server error" });
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const getInviteUrl = async (req, res) => {
+  const { id: groupId } = req.params;
+
+  createUrl(
+    { isPublic: true, group: groupId },
+    {
+      success: (invitation) => {
+        res.status(200).json({ success: true, data: invitation });
+      },
+      error: (e) => {
+        console.log(e);
+        res
+          .status(500)
+          .json({ success: false, message: "Internal server error" });
+      },
+    }
+  );
+};
+
+export const deleteRemoveMember = async (req, res) => {
+  const { id: groupId } = req.params;
+  const { userId } = req.body;
+
+  removeMember(groupId, userId, {
+    success: (group) => {
+      res.status(200).json({ success: true, data: group });
+    },
+    error: (e) => {
+      console.log(e);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    },
+  });
 };
