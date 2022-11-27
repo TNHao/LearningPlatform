@@ -11,12 +11,7 @@ import {
     Input,
     Switch,
 } from 'antd'
-import {
-    DribbbleOutlined,
-    TwitterOutlined,
-    InstagramOutlined,
-    GithubOutlined,
-} from '@ant-design/icons'
+
 
 
 function onChange(checked) {
@@ -26,6 +21,14 @@ const { Title } = Typography
 const { Header, Footer, Content } = Layout
 
 export default function SignIn() {
+    const onFinish = (values) => {
+        console.log("Success:", values);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+    };
+
     return (
         <Layout className="layout-default layout-signin">
             <Header>
@@ -73,8 +76,8 @@ export default function SignIn() {
                             Enter your email and password to sign in
                         </Title>
                         <Form
-                            // onFinish={onFinish}
-                            // onFinishFailed={onFinishFailed}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
                             layout="vertical"
                             className="row-col"
                         >
@@ -126,9 +129,9 @@ export default function SignIn() {
                             </Form.Item>
                             <p className="font-semibold text-muted">
                                 Dont have an account?{' '}
-                                {/* <Link to="/sign-up" className="text-dark font-bold">
-                                        Sign Up
-                                    </Link> */}
+                                <Link to="/sign-up" className="text-dark font-bold">
+                                    Sign Up
+                                </Link>
                             </p>
                         </Form>
                     </Col>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {
     Layout,
     Menu,
@@ -8,7 +9,8 @@ import {
     Form,
     Input,
     Checkbox,
-    Row
+    Row,
+    Col
 } from 'antd'
 // import { Link } from 'react-router-dom';
 import {
@@ -17,13 +19,21 @@ import {
     InstagramOutlined,
     GithubOutlined,
 } from '@ant-design/icons'
-import logo1 from '../assets/images/logos-facebook.svg'
+
 import logo3 from '../assets/images/Google__G__Logo.svg.png'
 
 const { Title } = Typography
 const { Header, Footer, Content } = Layout
 
 export default function SignUp() {
+    const onFinish = (values) => {
+        console.log("Success:", values);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+    };
+
     return (
         <div className="layout-default ant-layout layout-sign-up">
             <Header>
@@ -62,16 +72,12 @@ export default function SignUp() {
 
             <Content className=" sign-up-bg">
                 <Row gutter={[24, 0]} justify="space-around" className="signin-content-height">
-                    <Card
+                    {/* <Card
                         className="card-signup header-solid h-full ant-card"
                         title={<h5>Register With</h5>}
                         bordered="false"
                     >
-
                         <div className="sign-up-gateways">
-                            <Button type="false">
-                                <img src={logo1} alt="logo 1" />
-                            </Button>
                             <Button type="false">
                                 <img src={logo3} alt="logo 3" />
                             </Button>
@@ -82,8 +88,8 @@ export default function SignUp() {
                         <Form
                             name="basic"
                             initialValues={{ remember: true }}
-                            // onFinish={onFinish}
-                            // onFinishFailed={onFinishFailed}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
                             className="row-col"
                         >
                             <Form.Item
@@ -144,11 +150,98 @@ export default function SignUp() {
                         </Form>
                         <p className="font-semibold text-muted text-center">
                             Already have an account?{' '}
-                            {/* <Link to="/sign-in" className="font-bold text-dark">
-                            Sign In
-                        </Link> */}
+                            <Link to="/sign-in" className="font-bold text-dark">
+                                Sign In
+                            </Link>
                         </p>
-                    </Card>
+                    </Card> */}
+                    <Col
+                        xs={{ span: 24, offset: 0 }}
+                        lg={{ span: 6, offset: 2 }}
+                        md={{ span: 12 }}
+                    >
+                        <Title className="mb-15">Sign Up</Title>
+                        <Title className="font-regular text-muted" level={5}>
+                            Enter your email and password to sign in
+                        </Title>
+                        <div className="sign-up-gateways">
+                            <Button type="false">
+                                <img src={logo3} alt="logo 3" />
+                            </Button>
+                        </div>
+                        <p className="text-center my-25 font-semibold text-muted">
+                            Or
+                        </p>
+                        <Form
+                            name="basic"
+                            initialValues={{ remember: true }}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                            className="row-col"
+                        >
+                            <Form.Item
+                                name="Name"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your username!',
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="Name" />
+                            </Form.Item>
+                            <Form.Item
+                                name="email"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your email!',
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="email" />
+                            </Form.Item>
+                            <Form.Item
+                                name="password"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your password!',
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="Password" />
+                            </Form.Item>
+
+                            <Form.Item name="remember" valuePropName="checked">
+                                <Checkbox>
+                                    I agree the{' '}
+                                    <a
+                                        href="#pablo"
+                                        className="font-bold text-dark"
+                                    >
+                                        Terms and Conditions
+                                    </a>
+                                </Checkbox>
+                            </Form.Item>
+
+                            <Form.Item>
+                                <Button
+                                    style={{ width: '100%' }}
+                                    type="primary"
+                                    htmlType="submit"
+                                >
+                                    SIGN UP
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                        <p className="font-semibold text-muted text-center">
+                            Already have an account?{' '}
+                            <Link to="/sign-in" className="font-bold text-dark">
+                                Sign In
+                            </Link>
+                        </p>
+                    </Col>
                 </Row>
 
             </Content>
