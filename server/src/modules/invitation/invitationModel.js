@@ -16,22 +16,29 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-const InviteUrl = mongoose.model("inviteUrl", schema);
+const Invitation = mongoose.model("invitation", schema);
 
-export const createUrl = async ({ isPublic, group, sendTo }, callbacks) => {
+/**
+ * @param {Boolean} isPublic
+ * @param {ObjectId} group
+ * @param {Email} sendTo
+ * @param {{success: (data) => void, error: (e) => void}} callbacks
+ * @returns invitation info
+ */
+export const createInvitation = async ({ isPublic, group, sendTo }, callbacks) => {
   const key = uuidv4();
 
   try {
     let promise;
     if (isPublic) {
-      promise = InviteUrl.create({
+      promise = Invitation.create({
         key,
         group,
         isPublic,
         isUsed: false,
       });
     } else {
-      promise = InviteUrl.create({
+      promise = Invitation.create({
         key,
         isPublic,
         group,
@@ -41,10 +48,10 @@ export const createUrl = async ({ isPublic, group, sendTo }, callbacks) => {
       });
     }
 
-    const inviteUrl = await promise;
+    const invitation = await promise;
 
-    callbacks?.success(inviteUrl);
-    return inviteUrl;
+    callbacks?.success(invitation);
+    return invitation;
   } catch (error) {
     callbacks?.error(error);
 
@@ -52,42 +59,53 @@ export const createUrl = async ({ isPublic, group, sendTo }, callbacks) => {
   }
 };
 
-export const isUrlValid = async ({ key, sendTo }, callbacks) => {
+export const isInvitationValid = async ({ key, sendTo }, callbacks) => {
   try {
-    const inviteUrl = await InviteUrl.findOne({ key }).populate("group");
+    const invitation = await Invitation.findOne({ key }).populate("group");
 
-    if (!inviteUrl) {
+    if (!invitation) {
       callbacks?.success({ isValid: false });
       return { isValid: false };
     }
 
     const currentTime = new Date().getTime();
-    const createdTime = new Date(inviteUrl.createdAt).getTime();
+    const createdTime = new Date(invitation.createdAt).getTime();
 
     if (
-      inviteUrl.isUsed ||
-      currentTime > createdTime + inviteUrl.expirePeriod ||
-      (!inviteUrl.isPublic && sendTo !== inviteUrl.sendTo)
+      invitation.isUsed ||
+      currentTime > createdTime + invitation.expirePeriod ||
+      (!invitation.isPublic && sendTo !== invitation.sendTo)
     ) {
-      callbacks?.success({ isValid: false, inviteUrl });
-      return { isValid: false, inviteUrl };
+      callbacks?.success({ isValid: false, invitation });
+      return { isValid: false, invitation };
     }
 
-    callbacks?.success({ isValid: true, inviteUrl });
-    return { isValid: true, inviteUrl };
+    callbacks?.success({ isValid: true, invitation });
+    return { isValid: true, invitation };
   } catch (error) {
     callbacks?.error(error);
     throw error;
   }
 };
 
-export const getUrlDetail = async ({ key, group }, callbacks) => {
+export const getInvitationDetail = async ({ key, group }, callbacks) => {
   try {
-    const inviteUrl = await InviteUrl.findOne({
+    const invitation = await Invitation.findOne({
       $or: [{ key }],
     }).populate("group");
-    callbacks?.success(inviteUrl);
-    return inviteUrl;
+    callbacks?.success(invitation);
+    return invitation;
+  } catch (error) {
+    callbacks?.error?.(error);
+    throw error;
+  }
+};
+
+export const getInvitationPublic = async (group, callbacks) => {
+  try {
+    const invitation = await Invitation.findOne({ group, isPublic: true }).populate("group");
+    callbacks?.success(invitation);
+    return invitation;
   } catch (error) {
     callbacks?.error?.(error);
     throw error;
