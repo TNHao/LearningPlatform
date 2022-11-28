@@ -1,0 +1,1 @@
+export const URL_EXPIRE_TIME = 7 * 24 * 60 * 60 * 100; // a week
