@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const schema = new Schema(
   {
     name: { type: Schema.Types.String, require: true },
     username: { type: Schema.Types.String, require: true },
-    emil: { type: Schema.Types.String, require: true, unique: true },
+    email: { type: Schema.Types.String, require: true, unique: true },
     password: { type: Schema.Types.String },
     avatarUrl: { type: Schema.Types.String },
     isActive: { type: Schema.Types.Boolean, default: 0 },
@@ -75,9 +76,10 @@ export const findUserById = async (userId, callbacks) => {
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated user info
  */
- export const findUserByEmail = async (email, callbacks) => {
+
+export const findUserByEmail = async (email, callbacks) => {
   try {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email });
     callbacks?.success(user);
     return user;
   } catch (error) {
