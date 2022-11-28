@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail } from "../modules/user/userModel";
+import { createUser, findUserByEmail } from "../user/userModel";
 
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
@@ -22,7 +22,8 @@ export const createAccount = async (req, res) => {
     const newUser = {
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isActive: false
     }
     console.log(newUser);
     createUser(newUser, {
