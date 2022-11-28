@@ -17,7 +17,6 @@ export default function App() {
         <div>
 
             <Routes>
-
                 <Route path="/" element={<Navigate replace to="/sign-in" />} />
                 <Route path="/id" element={<Profile />} />
                 <Route path="/sign-up" element={<SignUp />} />
