@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "../user/userModel";
 const { Schema } = mongoose;
 
 const schema = new Schema(
@@ -6,7 +7,7 @@ const schema = new Schema(
     name: { type: Schema.Types.String, require: true },
     members: [
       {
-        detail: { type: Schema.Types.ObjectId, ref: "user", require: true },
+        detail: { type: Schema.Types.ObjectId, ref: User, require: true },
         role: {
           type: Schema.Types.String,
           require: true,
@@ -19,7 +20,7 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-const Group = mongoose.model("Group", schema);
+export const Group = mongoose.model("Group", schema);
 
 /**
  *
@@ -158,7 +159,7 @@ export const findGroupById = async (groupId, userId, callbacks) => {
   try {
     const group = await Group.findOne({
       _id: groupId,
-      members: { $elemMatch: { detail: userId } }
+      members: { $elemMatch: { detail: userId } },
     });
     callbacks?.success(group);
     return group;
