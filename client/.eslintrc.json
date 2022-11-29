@@ -111,6 +111,7 @@
         "js": "never",
         "jsx": "never"
       }
-    ]
+    ],
+    "import/prefer-default-export": 0
   }
 }
