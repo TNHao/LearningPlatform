@@ -76,7 +76,6 @@ export const findUserById = async (userId, callbacks) => {
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated user info
  */
-
 export const findUserByEmail = async (email, callbacks) => {
   try {
     const user = await User.findOne({ email });

@@ -13,7 +13,7 @@ router.get("/", GroupController.getAllByUserId);
 // @access Private and role ADMINISTRATOR or MANAGER
 router.get("/:id", GroupController.getOne);
 
-// @route POST /
+// @route POST /:id/invitation-url
 // @desc Member join group
 // @access All
 router.get("/:id/invitation-url", GroupController.getInviteUrl);
@@ -33,14 +33,10 @@ router.post("/:id/join-group", GroupController.postJoinGroup);
 // @access Private and role ADMINISTRATOR
 router.post("/invite", GroupController.postInvite);
 
-// verify invitation
-// remove menber
-// set co-owner
-
-// @route PUT /
+// @route PUT /:id
 // @desc Update Group
 // @access Private and role ADMINISTRATOR
-router.put("/", GroupController.putUpdate);
+router.put("/:id", GroupController.putUpdate);
 
 // @route DELETE /:id
 // @desc Delete Group
