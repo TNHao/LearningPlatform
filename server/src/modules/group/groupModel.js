@@ -63,6 +63,24 @@ export const updateGroupInfo = async (groupInfo, callbacks) => {
 /**
  *
  * @param {ObjectId} groupId
+ * @param {{success: (data) => void, error: (e) => void}} callbacks
+ * @returns updated group info
+ */
+export const deleteGroup = async (groupId, callbacks) => {
+  try {
+    await Group.findOne({ _id: groupId }).remove();
+    callbacks?.success();
+    return true;
+  } catch (error) {
+    callbacks?.error(error);
+    throw error;
+  }
+}
+
+
+/**
+ *
+ * @param {ObjectId} groupId
  * @param {{detail: memberId, role: ["owner", "co-owner", "member"]}} memberInfo
  * @param {{success: (data) => void, error: (e) => void}} callbacks
  * @returns updated group info
