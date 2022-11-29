@@ -7,10 +7,11 @@ import './assets/styles/responsive.css';
 import SignUp from './pages/signUp';
 import SignIn from './pages/signIn';
 
-import Home from './pages/home';
+import Home from './pages/Home';
 import Profile from './pages/profile';
 import VerifySuccessPage from './pages/verifySuccessPage';
 import JoinGroup from './components/joinGroup/JoinGroup';
+import Group from './pages/Group';
 
 export default function App() {
     return (
@@ -22,6 +23,8 @@ export default function App() {
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/verify-success" element={<VerifySuccessPage />} />
                 <Route path="/group/invite" element={<JoinGroup />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/group" element={<Group />} />
             </Routes>
         </div>
     );
