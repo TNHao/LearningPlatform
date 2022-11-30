@@ -185,14 +185,14 @@ export default function Group() {
             menu={{
               items: [
                 {
-                  label: <a href="/profile">Profile</a>,
+                  label: <a href="/user">Profile</a>,
                   key: "0"
                 },
                 {
                   type: "divider"
                 },
                 {
-                  label: <a href="/sign-in">Logout</a>,
+                  label: <a href="/login">Logout</a>,
                   key: "2"
                 }
               ]
