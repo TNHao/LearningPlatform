@@ -15,9 +15,7 @@ export const roleCheckMW = async (req, res, next, allowedRoles) => {
 
   const { members } = group;
 
-  const member = members.find((user) => {
-    return allowedRoles.includes(user.role);
-  });
+  const member = members.find((user) => allowedRoles.includes(user.role));
 
   if (!member) {
     return res.status(401).send({ message: "Unauthorized" });
