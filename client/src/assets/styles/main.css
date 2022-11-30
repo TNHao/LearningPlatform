@@ -1645,7 +1645,11 @@ body {
   font-weight: 700;
   color: #141414;
 }
-
+.signup h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #141414;
+}
 .signin h5 {
   font-weight: 400;
   color: #8c8c8c;

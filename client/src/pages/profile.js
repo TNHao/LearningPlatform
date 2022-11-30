@@ -1,4 +1,4 @@
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 
 import {
   Row,
@@ -11,14 +11,14 @@ import {
   Radio,
   Switch,
   Upload,
-  message,
+  message
 } from "antd";
 
 import {
   FacebookOutlined,
   TwitterOutlined,
   InstagramOutlined,
-  VerticalAlignTopOutlined,
+  VerticalAlignTopOutlined
 } from "@ant-design/icons";
 
 import BgProfile from "../assets/images/bg-profile.jpg";
@@ -31,11 +31,12 @@ import convesionImg5 from "../assets/images/face-2.jpg";
 import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
+import getJson from "../utils/api/getJson";
+import { API_DOMAIN } from "../constants/urls";
 
 function Profile() {
   const [imageURL, setImageURL] = useState(false);
   const [, setLoading] = useState(false);
-
   const getBase64 = (img, callback) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result));
@@ -66,7 +67,10 @@ function Profile() {
       });
     }
   };
-
+  useEffect(() => {
+    const email = localStorage.getItem("user");
+    getJson(API_DOMAIN, "/users", {});
+  });
   const pencil = [
     <svg
       width="20"
@@ -84,7 +88,7 @@ function Profile() {
         d="M11.3787 5.79289L3 14.1716V17H5.82842L14.2071 8.62132L11.3787 5.79289Z"
         className="fill-gray-7"
       />
-    </svg>,
+    </svg>
   ];
 
   const uploadButton = (
@@ -98,19 +102,18 @@ function Profile() {
     {
       title: "Group A",
       avatar: convesionImg,
-      description: "Môn ABC",
+      description: "Môn ABC"
     },
     {
       title: "Group B",
       avatar: convesionImg2,
-      description: "Môn DEF",
+      description: "Môn DEF"
     },
     {
       title: "Group C",
       avatar: convesionImg3,
-      description: "Môn XYZ",
-    },
-
+      description: "Môn XYZ"
+    }
   ];
 
   const project = [
@@ -119,22 +122,22 @@ function Profile() {
       titlesub: "Project #1",
       title: "Modern",
       disciption:
-        "As Uber works through a huge amount of internal management turmoil.",
+        "As Uber works through a huge amount of internal management turmoil."
     },
     {
       img: project2,
       titlesub: "Project #2",
       title: "Scandinavian",
       disciption:
-        "Music is something that every person has his or her own specific opinion about.",
+        "Music is something that every person has his or her own specific opinion about."
     },
     {
       img: project3,
       titlesub: "Project #3",
       title: "Minimalist",
       disciption:
-        "Different people have different taste, and various types of music, Zimbali Resort",
-    },
+        "Different people have different taste, and various types of music, Zimbali Resort"
+    }
   ];
 
   return (
@@ -165,7 +168,7 @@ function Profile() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "flex-end",
+                justifyContent: "flex-end"
               }}
             >
               <Radio.Group defaultValue="a">
@@ -251,7 +254,6 @@ function Profile() {
               <Descriptions.Item label="Location" span={3}>
                 USA
               </Descriptions.Item>
-
             </Descriptions>
           </Card>
         </Col>
