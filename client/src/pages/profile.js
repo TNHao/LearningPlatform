@@ -34,27 +34,28 @@ import getJson from "../utils/api/getJson";
 import { API_DOMAIN } from "../constants/urls";
 
 function Profile() {
-
   const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     const email = localStorage.getItem("user");
-    axios.get(
-      "http://localhost:5000/users",
-      {
-        headers: {
-          Authorization: localStorage.getItem("accessToken")
-        }
-      }, { withCredentials: true }
-    )
+    axios
+      .get(
+        `${API_DOMAIN}/users`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          }
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
         console.log(response.data);
-        setUserInfo(response.data.user)
+        setUserInfo(response.data.user);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [])
+  }, []);
   const pencil = [
     <svg
       width="20"
@@ -77,7 +78,7 @@ function Profile() {
   const logout = () => {
     localStorage.clear();
     navigate("/login");
-  }
+  };
 
   const data = [
     {
@@ -96,8 +97,8 @@ function Profile() {
       description: "Môn XYZ"
     }
   ];
-  const defaultAvatar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROdEaZteLTepbACoy3MjSfAsulnfciHnp4nw&usqp=CAU'
-
+  const defaultAvatar =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROdEaZteLTepbACoy3MjSfAsulnfciHnp4nw&usqp=CAU";
 
   return (
     <>
@@ -113,7 +114,11 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                <Avatar size={74} shape="square" src={userInfo.avatarURL ? userInfo.avatarURL : defaultAvatar} />
+                <Avatar
+                  size={74}
+                  shape="square"
+                  src={userInfo.avatarURL ? userInfo.avatarURL : defaultAvatar}
+                />
 
                 <div className="avatar-info">
                   <h4 className="font-semibold m-0">{userInfo.name}</h4>
@@ -131,9 +136,15 @@ function Profile() {
               }}
             >
               <Radio.Group defaultValue="a">
-                <Button value="a"><PlusOutlined /></Button>
-                <Button value="b"><SettingOutlined /></Button>
-                <Button onClick={logout}><LogoutOutlined /></Button>
+                <Button value="a">
+                  <PlusOutlined />
+                </Button>
+                <Button value="b">
+                  <SettingOutlined />
+                </Button>
+                <Button onClick={logout}>
+                  <LogoutOutlined />
+                </Button>
               </Radio.Group>
             </Col>
           </Row>
@@ -149,9 +160,8 @@ function Profile() {
             extra={<Button type="link">{pencil}</Button>}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
-
             <hr className="my-25" />
-            <Descriptions >
+            <Descriptions>
               <Descriptions.Item label="Full Name" span={3}>
                 {userInfo.name}
               </Descriptions.Item>
@@ -159,7 +169,6 @@ function Profile() {
               <Descriptions.Item label="Email" span={3}>
                 {userInfo.email}
               </Descriptions.Item>
-
             </Descriptions>
           </Card>
         </Col>
@@ -191,7 +200,6 @@ function Profile() {
           </Card>
         </Col>
       </Row>
-
     </>
   );
 }

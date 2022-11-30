@@ -22,6 +22,7 @@ import {
 } from "@ant-design/icons";
 
 import logo3 from "../assets/images/Google__G__Logo.svg.png";
+import { API_DOMAIN } from "../constants/urls";
 
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
@@ -30,7 +31,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const onFinish = (values) => {
     axios
-      .post("http://localhost:5000/sign-up", {
+      .post(`${API_DOMAIN}/sign-up`, {
         name: values.name,
         email: values.email,
         password: values.password

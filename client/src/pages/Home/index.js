@@ -14,6 +14,7 @@ import { PlusOutlined } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { API_DOMAIN } from "../../constants/urls";
 
 const { Header, Content, Footer } = Layout;
 
@@ -26,7 +27,7 @@ export default function Home() {
 
   const getAllGroup = () => {
     axios
-      .get("http://localhost:5000/groups", {
+      .get(`${API_DOMAIN}/groups`, {
         headers: {
           Authorization: localStorage.getItem("accessToken")
         }
@@ -64,7 +65,7 @@ export default function Home() {
   const handleOk = () => {
     axios
       .post(
-        "http://localhost:5000/groups",
+        `${API_DOMAIN}/groups`,
         {
           name: groupName
         },
@@ -88,7 +89,7 @@ export default function Home() {
   const logout = () => {
     localStorage.clear();
     navigate("/login");
-  }
+  };
   const handleCancel = () => {
     setGroupName("");
     setIsModalOpen(false);
@@ -167,19 +168,19 @@ export default function Home() {
           <div>
             {groups.length != 0
               ? groups.map(function mapGroup(group) {
-                return (
-                  <Card
-                    key={group.id}
-                    title={<a href={group.link}>{group.name} Group</a>}
-                    style={{
-                      marginInline: 200,
-                      marginBlock: 20
-                    }}
-                  >
-                    Your role: {group.yourRole}
-                  </Card>
-                );
-              })
+                  return (
+                    <Card
+                      key={group.id}
+                      title={<a href={group.link}>{group.name} Group</a>}
+                      style={{
+                        marginInline: 200,
+                        marginBlock: 20
+                      }}
+                    >
+                      Your role: {group.yourRole}
+                    </Card>
+                  );
+                })
               : null}
           </div>
           <Modal

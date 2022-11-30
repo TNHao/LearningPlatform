@@ -1,2 +1,3 @@
 /* eslint-disable */
-export const API_DOMAIN = "http://localhost:5000";
+export const API_DOMAIN =
+  "https://learning-platform-server-lemon-ten.vercel.app";

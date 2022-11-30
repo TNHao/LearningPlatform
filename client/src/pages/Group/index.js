@@ -14,6 +14,7 @@ import {
 import { PlusOutlined, MoreOutlined, CopyOutlined } from "@ant-design/icons";
 
 import logo from "../../assets/logo.png";
+import { API_DOMAIN } from "../../constants/urls";
 
 const { Header, Content, Footer } = Layout;
 
@@ -29,7 +30,7 @@ export default function Group() {
 
   const getGroupInfo = () => {
     axios
-      .get(`http://localhost:5000/groups/${id}`, {
+      .get(`${API_DOMAIN}/groups/${id}`, {
         headers: {
           Authorization: localStorage.getItem("accessToken")
         }
@@ -66,7 +67,7 @@ export default function Group() {
 
   const getInviteLink = () => {
     axios
-      .get(`http://localhost:5000/groups/${id}/invitation-url`, {
+      .get(`${API_DOMAIN}/groups/${id}/invitation-url`, {
         headers: {
           Authorization: localStorage.getItem("accessToken")
         }
@@ -101,7 +102,7 @@ export default function Group() {
   const invite = () => {
     axios
       .post(
-        "http://localhost:5000/groups/invite",
+        `${API_DOMAIN}/groups/invite`,
         {
           groupId: id,
           emails: [email]
@@ -125,7 +126,7 @@ export default function Group() {
 
   const removeMember = (userId) => {
     axios
-      .get(`http://localhost:5000/groups/${id}/remove-member/${userId}`, {
+      .get(`${API_DOMAIN}/groups/${id}/remove-member/${userId}`, {
         headers: {
           Authorization: localStorage.getItem("accessToken")
         }
