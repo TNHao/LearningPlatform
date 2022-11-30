@@ -32,11 +32,7 @@ import {
  */
 export const getAllByUserId = async (req, res) => {
   try {
-    // if (!(await checkRoles(req.groupId, ['administrator', 'manager']))) {
-    //   return res.status(403).json({ success: false, message: "Permission denied" });
-    // }
-
-    findGroupByMemberId(req.body.userId, {
+    findGroupByMemberId(req.id, {
       success: (groups) => res.json({ success: true, data: groups }),
       error: (error) => {
         console.log(error);
@@ -94,7 +90,7 @@ export const getOne = async (req, res) => {
  * @returns void
  */
 export const postCreate = async (req, res) => {
-  const { name, userId } = req.body;
+  const { name } = req.body;
 
   try {
     createGroup(
@@ -102,7 +98,7 @@ export const postCreate = async (req, res) => {
         name,
         members: [
           {
-            detail: userId,
+            detail: req.id,
             role: "owner",
           },
         ],

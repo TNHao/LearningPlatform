@@ -24,7 +24,7 @@ export default function App() {
         <Route path="/verify-success" element={<VerifySuccessPage />} />
         <Route path="/group/invite" element={<JoinGroup />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/group" element={<Group />} />
+        <Route path="/group/:id" element={<Group />} />
       </Routes>
     </div>
   );

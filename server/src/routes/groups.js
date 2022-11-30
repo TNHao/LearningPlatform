@@ -1,13 +1,14 @@
 // import verifyJWTToken from '../../middleware/verifyJWTToken.js';
 import { roleCheckMW } from "../middlewares/roleCheck.mw.js";
 import * as GroupController from "../modules/group/groupController.js";
+const { isUserAuthenticated } = require("../modules/auth/auth.mdw");
 var express = require("express");
 const router = express.Router();
 
 // @route GET /
 // @desc Get All Group
 // @access Private and role ADMINISTRATOR or MANAGER
-router.get("/", GroupController.getAllByUserId);
+router.get("/", isUserAuthenticated, GroupController.getAllByUserId);
 
 // @route GET /:id
 // @desc Show Group
@@ -28,7 +29,7 @@ router.get("/:id/invitation-url", GroupController.getInviteUrl);
 // @route POST /
 // @desc Create Group
 // @access Private and role ADMINISTRATOR
-router.post("/", GroupController.postCreate);
+router.post("/", isUserAuthenticated, GroupController.postCreate);
 
 // @route POST /
 // @desc Member join group

@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { Layout, Dropdown, Avatar, Card } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 
@@ -7,6 +8,9 @@ import logo from "../../assets/logo.png";
 const { Header, Content, Footer } = Layout;
 
 export default function Group() {
+  const { id } = useParams();
+  console.log(id);
+
   const members = [
     {
       id: 0,
