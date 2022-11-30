@@ -7,8 +7,8 @@ const { promisify } = require('util');
 const sign = promisify(jwt.sign).bind(jwt);
 const verify = promisify(jwt.verify).bind(jwt);
 const bcrypt = require('bcrypt');
-const randToken = require('rand-token');
-const cookie = require('cookies');
+// const randToken = require('rand-token');
+// const cookie = require('cookies');
 
 const saltRounds = 10;
 export const createAccount = async (req, res) => {
