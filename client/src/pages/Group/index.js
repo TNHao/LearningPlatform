@@ -95,7 +95,28 @@ export default function Group() {
   };
 
   const invite = () => {
-    console.log("invite");
+    axios
+      .post(
+        "http://localhost:5000/groups/invite",
+        {
+          groupId: id,
+          emails: [email]
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          }
+        }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          setIsModalOpen(false);
+        }
+        alert(response.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -241,6 +262,13 @@ export default function Group() {
                 <Button icon={<CopyOutlined />} />
               </Tooltip> */}
             </Input.Group>
+            <div
+              style={{
+                marginBottom: 10
+              }}
+            >
+              or
+            </div>
             <div>Invite by Email</div>
             <Input
               style={{
@@ -250,7 +278,12 @@ export default function Group() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <Button type="primary" onClick={invite()}>
+            <Button
+              type="primary"
+              onClick={() => {
+                invite();
+              }}
+            >
               Invite
             </Button>
           </Modal>

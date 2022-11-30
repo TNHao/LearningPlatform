@@ -39,7 +39,7 @@ router.post("/:id/join-group", GroupController.postJoinGroup);
 // @route POST /invite
 // @desc Invite Member
 // @access Private and role ADMINISTRATOR
-router.post("/invite", GroupController.postInvite);
+router.post("/invite", isUserAuthenticated, GroupController.postInvite);
 
 // @route PUT /:id
 // @desc Update Group
