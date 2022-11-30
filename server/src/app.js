@@ -19,7 +19,7 @@ const corsOptions = {
 }
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 
 require("./modules/auth/auth.mdw");
 
