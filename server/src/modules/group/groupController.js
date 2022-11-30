@@ -120,7 +120,7 @@ export const postCreate = async (req, res) => {
             {
               success: (invitation) => {
                 const clientDomain = req.get("origin") ? req.get("origin") + "/" : req.get("referer");
-                const genLink = clientDomain + `groups/invite?group=${groupId}&code=${invitation.key}`;
+                const genLink = clientDomain + `groups/invite?group=${group._id}&code=${invitation.key}`;
                 res.status(200).json({ success: true, data: { group, inviteUrl: genLink } });
               },
               error: (error) => {
