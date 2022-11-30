@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Layout,
     Menu,
@@ -12,7 +12,9 @@ import {
     Input,
     Switch,
 } from 'antd'
-
+import logoGoogle from '../assets/images/Google__G__Logo.svg.png'
+import { API_DOMAIN } from '../constants/urls';
+import getJson from '../utils/api/getJson';
 
 
 function onChange(checked) {
@@ -22,18 +24,40 @@ const { Title } = Typography
 const { Header, Footer, Content } = Layout
 
 export default function SignIn() {
+    const navigate = useNavigate();
     const onFinish = (values) => {
-        console.log("Success:", values);
         axios.post('http://localhost:5000/login', {
             email: values.email,
             password: values.password
         }).then((res) => {
             console.log(res);
+            localStorage.setItem("accessToken", res.data.accessToken);
+            localStorage.setItem("user", res.data.email);
+
+            // const data = fetch('http://localhost:5000/auth/user').then((data) => { console.log(data); });
+
+            // navigate(`/user/${res.data.email}`);
         }).catch((error) => {
             console.error(error);
         })
     };
-
+    // const fetchUserData = async () => {
+    //     const res = await axios.get('http://localhost:5000/auth/user', { withCredentials: true }).catch((err) => {
+    //         console.log(err);
+    //     })
+    //     if (res) {
+    //         console.log(res);
+    //         localStorage.setItem("accessToken", res.accessToken);
+    //     }
+    // }
+    // const googleLogin = async () => {
+    //     const googleLoginURL = "http://localhost:5000/login/google";
+    //     const loginWindow = window.open(
+    //         googleLoginURL,
+    //         "_blank",
+    //         "width=500,height =600"
+    //     );
+    // }
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
@@ -52,6 +76,7 @@ export default function SignIn() {
                             Enter your email and password to sign in
                         </Title>
                         <Form
+                            name="basic"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
                             layout="vertical"
@@ -110,6 +135,14 @@ export default function SignIn() {
                                 </Link>
                             </p>
                         </Form>
+                        <p className="text-center my-25 font-semibold text-muted">
+                            Or Login with
+                        </p>
+                        <div className='sign-up-gateways'>
+                            <Button type="false" className=" ant-btn" onClick={{}}>
+                                <img src={logoGoogle} alt="logo 3" />
+                            </Button>
+                        </div>
                     </Col>
                 </Row>
 

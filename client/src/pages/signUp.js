@@ -47,7 +47,7 @@ export default function SignUp() {
     return (
         <div className="layout-default ant-layout layout-sign-up">
 
-            <Content className=" sign-up-bg">
+            <Content className="signin sign-up-bg">
                 <Row gutter={[24, 0]} justify="space-around" className="">
                     <Col
                         xs={{ span: 24, offset: 0 }}
@@ -55,28 +55,18 @@ export default function SignUp() {
                         md={{ span: 12 }}
                     >
                         <Title className="mb-15">Sign Up</Title>
-                        <Title className='text-center'>
-                            <h3>Register With</h3>
-                        </Title>
-                        <div className='sign-up-gateways'>
-                            <Button type="false" className=" ant-btn">
-                                <img src={logo3} alt="logo 3" />
-                            </Button>
-                        </div>
 
-
-                        <p className="text-center my-25 font-semibold text-muted">
-                            Or
-                        </p>
                         <Form
                             name="basic"
                             initialValues={{ remember: true }}
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
+                            layout="vertical"
                             className="row-col"
                         >
                             <Form.Item
                                 name="name"
+                                label="Name"
                                 rules={[
                                     {
                                         required: true,
@@ -88,6 +78,7 @@ export default function SignUp() {
                             </Form.Item>
                             <Form.Item
                                 name="email"
+                                label="Email"
                                 rules={[
                                     {
                                         required: true,
@@ -99,6 +90,7 @@ export default function SignUp() {
                             </Form.Item>
                             <Form.Item
                                 name="password"
+                                label="Password"
                                 rules={[
                                     {
                                         required: true,

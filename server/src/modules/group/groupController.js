@@ -12,17 +12,17 @@ import {
   updateMemberRole,
   removeMember,
   deleteGroup,
-} from "./groupModel.js";
-import { findUserById, findUserByEmail } from "../user/userModel.js";
+} from "./groupModel";
+import { findUserById, findUserByEmail } from "../user/userModel";
 
 // Import Service
-import { sendInvitationMail } from "../../services/email/index.js";
+import { sendInvitationMail } from "../../services/email/index";
 import {
   createInvitation,
   isInvitationValid,
   getInvitationDetail,
   getInvitationPublic,
-} from "../invitation/invitationModel.js";
+} from "../invitation/invitationModel";
 
 /**
  * Get All Group
@@ -37,9 +37,7 @@ export const getAllByUserId = async (req, res) => {
     // }
 
     findGroupByMemberId(req.body.userId, {
-      success: (groups) => {
-        return res.json({ success: true, data: groups });
-      },
+      success: (groups) => res.json({ success: true, data: groups }),
       error: (error) => {
         console.log(error);
         res
@@ -74,7 +72,7 @@ export const getOne = async (req, res) => {
             .status(404)
             .json({ success: false, message: "Group not exist" });
         }
-        res.status(200).json({ success: true, data: group });
+        return res.status(200).json({ success: true, data: group });
       },
       error: (error) => {
         console.log(error);
@@ -101,7 +99,7 @@ export const postCreate = async (req, res) => {
   try {
     createGroup(
       {
-        name: name,
+        name,
         members: [
           {
             detail: userId,
@@ -115,7 +113,7 @@ export const postCreate = async (req, res) => {
             { isPublic: true, group: group._id },
             {
               success: (invitation) => {
-                const genLink = req.protocol + "://" + req.get("host") + `/groups/invite/group=${group._id}&code=${invitation.key}`;
+                const genLink = `${req.protocol}://${req.get("host")}/groups/invite/group=${group._id}&code=${invitation.key}`;
                 res.status(200).json({ success: true, data: { group, inviteUrl: genLink } });
               },
               error: (error) => {
@@ -148,7 +146,7 @@ export const postCreate = async (req, res) => {
 export const postInvite = async (req, res) => {
   const { groupId, userId, emails } = req.body;
   try {
-    var success = true;
+    let success = true;
     findUserById(userId, {
       success: (owner) => {
         emails.forEach((email) => {
@@ -160,7 +158,7 @@ export const postInvite = async (req, res) => {
             },
             {
               success: (invitation) => {
-                const genLink = req.protocol + "://" + req.get("host") + `/groups/invite/group=${groupId}&code=${invitation.key}`;
+                const genLink = `${req.protocol}://${req.get("host")}/groups/invite/group=${groupId}&code=${invitation.key}`;
                 console.log(owner.email, email);
                 sendInvitationMail(owner.name, "Group", email, genLink);
               },
@@ -285,7 +283,7 @@ export const getInviteUrl = async (req, res) => {
 
   getInvitationPublic(groupId, {
     success: (invitation) => {
-      const genLink = req.protocol + "://" + req.get("host") + `/groups/invite/group=${groupId}&code=${invitation.key}`;
+      const genLink = `${req.protocol}://${req.get("host")}/groups/invite/group=${groupId}&code=${invitation.key}`;
       res.status(200).json({ success: true, data: { inviteUrl: genLink } });
     },
     error: (error) => {

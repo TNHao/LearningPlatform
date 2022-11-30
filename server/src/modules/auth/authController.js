@@ -1,3 +1,4 @@
+
 import { createUser, findUserByEmail } from "../user/userModel";
 
 const jwt = require('jsonwebtoken');
@@ -7,6 +8,7 @@ const sign = promisify(jwt.sign).bind(jwt);
 const verify = promisify(jwt.verify).bind(jwt);
 const bcrypt = require('bcrypt');
 const randToken = require('rand-token');
+const cookie = require('cookies');
 
 const saltRounds = 10;
 export const createAccount = async (req, res) => {
@@ -49,7 +51,7 @@ export const generateToken = async (payload, secretSignature, tokenLife) => {
             secretSignature,
             {
                 algorithm: 'HS256',
-                expiresIn: tokenLife,
+                expiresIn: tokenLife * 60,
             },
         );
     } catch (error) {
@@ -60,7 +62,7 @@ export const generateToken = async (payload, secretSignature, tokenLife) => {
 export const decodeToken = async (token, secretKey) => {
     try {
         return await verify(token, secretKey, {
-            ignoreExpiration: true,
+            ignoreExpiration: false,
         });
     } catch (error) {
         console.log(`Error in decode access token: ${error}`);
@@ -70,6 +72,7 @@ export const decodeToken = async (token, secretKey) => {
 export const handleLogin = async (req, res) => {
     const { email, password } = req.body;
     const user = await findUserByEmail(email);
+    console.log(user);
     if (!user) {
         return res.status(401).send('Email không tồn tại.');
     }
@@ -105,9 +108,12 @@ export const handleLogin = async (req, res) => {
 
     //     refreshToken = user.refreshToken;
     // }
-
     return res.status(200).send({
         msg: 'Đăng nhập thành công.',
-        accessToken
+        accessToken,
+        email: user.email
     });
+}
+export const logout = async (req, res) => {
+
 }

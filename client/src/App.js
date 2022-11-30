@@ -17,7 +17,7 @@ export default function App() {
         <div>
             <Routes>
                 <Route path="/" element={<Navigate replace to="/sign-in" />} />
-                <Route path="/id" element={<Profile />} />
+                <Route path="/user/:email" element={<Profile />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/verify-success" element={<VerifySuccessPage />} />

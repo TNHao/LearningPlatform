@@ -1,5 +1,5 @@
 const express = require("express");
-const { verifyAccount } = require("../modules/user/userController");
+const { activeAccount } = require("../modules/user/userController");
 
 
 const router = express.Router();
@@ -8,8 +8,10 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
   res.send({ a: "user page" });
 });
-
+router.get("/:email", (req, res, next) => {
+  console.log(req.body);
+})
 router.get("/verify", async (req, res, next) => {
-  await verifyAccount();
+  await activeAccount();
 })
 module.exports = router;
