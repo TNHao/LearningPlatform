@@ -27,11 +27,15 @@ export const createAccount = async (req, res) => {
         password: hashedPassword,
         isActive: false
     }
-    console.log(newUser);
     createUser(newUser, {
-        success: (user) => {
+        success: async (user) => {
             console.log(user);
-            res.status(200).json({ success: true, data: user })
+            const dataForAccessToken = {
+                email: user.email,
+                id: user._id
+            };
+            const accessToken = await generateAccessToken(dataForAccessToken);
+            res.status(200).json({ success: true, accessToken, email: user.email })
         },
         error: (e) => {
             console.log(e);
@@ -69,6 +73,16 @@ export const decodeToken = async (token, secretKey) => {
         return null;
     }
 };
+export const generateAccessToken = async (dataForAccessToken) => {
+    const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
+    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+    const accessToken = await generateToken(
+        dataForAccessToken,
+        accessTokenSecret,
+        accessTokenLife,
+    );
+    return accessToken
+}
 export const handleLogin = async (req, res) => {
     const { email, password } = req.body;
     const user = await findUserByEmail(email);
@@ -82,17 +96,12 @@ export const handleLogin = async (req, res) => {
         return res.status(403).send('Mật khẩu không chính xác.');
     }
 
-    const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
-    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-
     const dataForAccessToken = {
         email: user.email,
         id: user._id
     };
-    const accessToken = await generateToken(
+    const accessToken = await generateAccessToken(
         dataForAccessToken,
-        accessTokenSecret,
-        accessTokenLife,
     );
     if (!accessToken) {
         return res
