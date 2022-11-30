@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Layout,
   Dropdown,
@@ -17,43 +18,75 @@ const { Header, Content, Footer } = Layout;
 
 export default function Home() {
   const [groupName, setGroupName] = useState("");
+  const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getAllGroup = () => {
+    axios
+      .get("http://localhost:5000/groups", {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      })
+      .then((response) => {
+        const userId = localStorage.getItem("userId");
+        setGroups(
+          response.data.data.map((group) => {
+            const yourRole = group.members.find(
+              (member) => member.detail === userId
+            );
+            return {
+              id: group._id,
+              name: group.name,
+              yourRole: yourRole.role,
+              link: `/group/${group._id}`
+            };
+          })
+        );
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getAllGroup();
+  }, []);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
-    console.log(groupName);
-    // call api create group
-    setIsModalOpen(false);
+    axios
+      .post(
+        "http://localhost:5000/groups",
+        {
+          name: groupName
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          }
+        }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          getAllGroup();
+          setIsModalOpen(false);
+        }
+        console.log(response.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleCancel = () => {
     setGroupName("");
     setIsModalOpen(false);
   };
-
-  const groups = [
-    {
-      name: "A"
-    },
-    {
-      name: "B"
-    },
-    {
-      name: "C"
-    },
-    {
-      name: "D"
-    },
-    {
-      name: "E"
-    },
-    {
-      name: "F"
-    }
-  ];
 
   return (
     <Layout>
@@ -126,17 +159,18 @@ export default function Home() {
           }}
         >
           <div>
-            {groups.length > 0
+            {groups.length != 0
               ? groups.map(function mapGroup(group) {
                   return (
                     <Card
-                      title={<a href="/group">{group.name}</a>}
+                      key={group.id}
+                      title={<a href={group.link}>{group.name} Group</a>}
                       style={{
                         marginInline: 200,
                         marginBlock: 20
                       }}
                     >
-                      {group.name}
+                      Your role: {group.yourRole}
                     </Card>
                   );
                 })

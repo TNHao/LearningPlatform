@@ -110,8 +110,14 @@ export const handleLogin = async (req, res) => {
     // }
     return res.status(200).send({
         msg: 'Đăng nhập thành công.',
-        accessToken,
-        email: user.email
+        data: {
+            user: {
+                id: user._id,
+                email: user.email,
+                name: user.name
+            },
+            accessToken
+        }
     });
 }
 export const logout = async (req, res) => {
