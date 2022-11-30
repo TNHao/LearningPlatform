@@ -14,7 +14,7 @@ router.get("/", isUserAuthenticated, GroupController.getAllByUserId);
 // @desc Show Group
 // @access Private and role ADMINISTRATOR or MANAGER
 router.get(
-  "/:id",
+  "/:id", isUserAuthenticated,
   (req, res, next) => {
     roleCheckMW(req, res, next, ["owner"]);
   },

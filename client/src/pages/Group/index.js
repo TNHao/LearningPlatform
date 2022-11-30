@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import { Layout, Dropdown, Avatar, Card } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 
@@ -9,20 +10,48 @@ const { Header, Content, Footer } = Layout;
 
 export default function Group() {
   const { id } = useParams();
-  console.log(id);
 
-  const members = [
-    {
-      id: 0,
-      name: "name",
-      role: "owner"
-    },
-    {
-      id: 1,
-      name: "name2",
-      role: "co-owner"
-    }
-  ];
+  const [groupName, setGroupName] = useState("");
+  const [members, setMembers] = useState([]);
+
+  const getGroupInfo = () => {
+    axios
+      .get(`http://localhost:5000/groups/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        // const userId = localStorage.getItem("userId");
+        if (response.data.success) {
+          const data = { ...response.data.data };
+          setGroupName(data.name);
+          setMembers(
+            data.members.map((member) => {
+              const user = data.users.find(
+                (user) => user.detail === member.detail
+              );
+              console.log(user);
+              return {
+                id: member.detail,
+                name: user.name,
+                role: member.role
+              };
+            })
+          );
+        } else {
+          console.log(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getGroupInfo();
+  }, []);
 
   return (
     <Layout>
@@ -35,14 +64,18 @@ export default function Group() {
           width: "100%"
         }}
       >
-        <a
+        <div
           style={{
             float: "left"
           }}
-          href="/home"
         >
-          <img src={logo} width={50} />
-        </a>
+          <a href="/home">
+            <img src={logo} width={50} />
+          </a>
+          <h3 style={{ display: "inline", marginInline: 25 }}>
+            {groupName} Group
+          </h3>
+        </div>
         <div
           style={{
             float: "right",

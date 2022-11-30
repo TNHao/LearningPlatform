@@ -13,7 +13,7 @@ import {
   removeMember,
   deleteGroup,
 } from "./groupModel";
-import { findUserById, findUserByEmail } from "../user/userModel";
+import { findUserById, findUserByIds, findUserByEmail } from "../user/userModel";
 
 // Import Service
 import { sendInvitationMail } from "../../services/email/index";
@@ -55,24 +55,33 @@ export const getAllByUserId = async (req, res) => {
  */
 export const getOne = async (req, res) => {
   const { id } = req.params;
+  const userId = req.id;
 
   try {
-    // if (!(await checkRoles(req.groupId, ['administrator', 'manager']))) {
-    //   return res.status(403).json({ success: false, message: "Permission denied" });
-    // }
-
-    findGroupById(id, req.body.userId, {
+    findGroupById(id, userId, {
       success: (group) => {
         if (!group) {
           return res
             .status(404)
             .json({ success: false, message: "Group not exist" });
         }
-        return res.status(200).json({ success: true, data: group });
+        const userIds = group.members.map((member) => member.detail);
+        findUserByIds(userIds, {
+          success: (users) => {
+            const data = { name: group.name, members: group.members, users: users.map((user) => { return { detail: user._id, name: user.name, email: user.email } }) }
+            return res.status(200).json({ success: true, data });
+          },
+          error: (error) => {
+            console.log(error);
+            return res
+              .status(500)
+              .json({ success: false, message: "Internal server error" });
+          }
+        })
       },
       error: (error) => {
         console.log(error);
-        res
+        return res
           .status(500)
           .json({ success: false, message: "Internal server error" });
       },
@@ -91,6 +100,7 @@ export const getOne = async (req, res) => {
  */
 export const postCreate = async (req, res) => {
   const { name } = req.body;
+  const userId = req.id;
 
   try {
     createGroup(
@@ -98,7 +108,7 @@ export const postCreate = async (req, res) => {
         name,
         members: [
           {
-            detail: req.id,
+            detail: userId,
             role: "owner",
           },
         ],
