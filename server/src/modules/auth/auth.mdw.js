@@ -50,10 +50,16 @@ export const isUserAuthenticated = async (req, res, next) => {
 
     if (req.headers.authorization) {
         const jwt = req.headers.authorization;
-        const userInfo = await decodeToken(jwt, process.env.ACCESS_TOKEN_SECRET);
-        const { id, email } = userInfo.payload;
-        req.id = id;
-        next();
+        try {
+            const userInfo = decodeToken(jwt, process.env.ACCESS_TOKEN_SECRET)
+            const { id, email } = userInfo.payload;
+            req.id = id;
+            req.email = email;
+            next();
+        }
+        catch (error) {
+            res.status(401).send("Verify failed");
+        }
     } else {
         res.status(401).send("You must login first!");
     }
