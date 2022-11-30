@@ -54,6 +54,6 @@ router.delete("/:id", GroupController.deleteRemove);
 // @route DELETE /:id
 // @desc Delete Group
 // @access Private and role ADMINISTRATOR
-router.delete("/:id/remove-member", GroupController.deleteRemoveMember);
+router.get("/:id/remove-member/:userId", isUserAuthenticated, GroupController.deleteRemoveMember);
 
 module.exports = router;

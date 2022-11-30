@@ -306,9 +306,10 @@ export const getInviteUrl = async (req, res) => {
 };
 
 export const deleteRemoveMember = async (req, res) => {
-  const { id: groupId } = req.params;
-  const { userId } = req.body;
+  const { id: groupId, userId } = req.params;
+  // const { userId } = req.body;
 
+  console.log(groupId, userId);
   removeMember(groupId, userId, {
     success: (group) => {
       res.status(200).json({ success: true, data: group });

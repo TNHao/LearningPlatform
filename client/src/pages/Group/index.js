@@ -24,6 +24,7 @@ export default function Group() {
   const [members, setMembers] = useState([]);
   const [inviteUrl, setInviteUrl] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getGroupInfo = () => {
@@ -51,6 +52,9 @@ export default function Group() {
               };
             })
           );
+          const userId = localStorage.getItem("userId");
+          const user = data.members.find((member) => member.detail === userId);
+          setRole(user.role);
         } else {
           console.log(response.data.message);
         }
@@ -113,6 +117,26 @@ export default function Group() {
           setIsModalOpen(false);
         }
         alert(response.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const removeMember = (userId) => {
+    axios
+      .get(`http://localhost:5000/groups/${id}/remove-member/${userId}`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      })
+      .then((response) => {
+        if (response.data.success) {
+          getGroupInfo();
+          alert("Remove successful");
+        } else {
+          alert("Remove Failed");
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -200,38 +224,68 @@ export default function Group() {
                     <Card
                       title={<div>{member.name}</div>}
                       extra={
-                        <Dropdown
-                          menu={{
-                            items: [
-                              {
-                                label: (
-                                  <a
-                                    onClick={() => {
-                                      console.log("object");
-                                    }}
-                                  >
-                                    Remove
-                                  </a>
-                                ),
-                                key: "0"
-                              },
-                              {
-                                type: "divider"
-                              },
-                              {
-                                label: <a href="/sign-in">Logout</a>,
-                                key: "2"
-                              }
-                            ]
-                          }}
-                          trigger={["click"]}
-                          placement="bottomRight"
-                          style={{
-                            float: "right"
-                          }}
-                        >
-                          <MoreOutlined />
-                        </Dropdown>
+                        role !== "member" && member.role !== "owner" ? (
+                          <Dropdown
+                            menu={{
+                              items:
+                                role === "owner"
+                                  ? [
+                                      {
+                                        label: (
+                                          <a
+                                            onClick={() => {
+                                              const urole =
+                                                member.role === "member"
+                                                  ? "co-owner"
+                                                  : "member";
+                                              console.log(urole);
+                                            }}
+                                          >
+                                            Set{" "}
+                                            {member.role === "member"
+                                              ? "co-owner"
+                                              : "member"}
+                                          </a>
+                                        ),
+                                        key: "0"
+                                      },
+                                      {
+                                        label: (
+                                          <a
+                                            onClick={() => {
+                                              removeMember(member.id);
+                                            }}
+                                          >
+                                            Remove
+                                          </a>
+                                        ),
+                                        key: "1"
+                                      }
+                                    ]
+                                  : [
+                                      {
+                                        label: (
+                                          <a
+                                            onClick={() => {
+                                              removeMember(member.id);
+                                            }}
+                                          >
+                                            Remove
+                                          </a>
+                                        ),
+                                        key: "0"
+                                      }
+                                    ]
+                            }}
+                            trigger={["click"]}
+                            placement="bottomRight"
+                            style={{
+                              float: "right"
+                            }}
+                          >
+                            <MoreOutlined />
+                          </Dropdown>
+                        ) : null
                       }
                       style={{
                         marginInline: 200,
