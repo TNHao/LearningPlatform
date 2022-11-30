@@ -252,7 +252,7 @@ export const deleteRemove = async (req, res) => {
 export const postJoinGroup = async (req, res) => {
   const { id: groupId } = req.params;
   const { userEmail, inviteKey: key } = req.body;
-  const { userId } = req.body;
+  const userId = req.id;
 
   try {
     const { isValid } = await isInvitationValid({ key, userEmail });
