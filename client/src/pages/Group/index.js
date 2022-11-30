@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Layout, Dropdown, Avatar, Card } from "antd";
-import { MoreOutlined } from "@ant-design/icons";
+import {
+  Layout,
+  Dropdown,
+  Avatar,
+  Card,
+  Tooltip,
+  Button,
+  Modal,
+  Input
+} from "antd";
+import { PlusOutlined, MoreOutlined, CopyOutlined } from "@ant-design/icons";
 
 import logo from "../../assets/logo.png";
 
@@ -13,6 +22,9 @@ export default function Group() {
 
   const [groupName, setGroupName] = useState("");
   const [members, setMembers] = useState([]);
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getGroupInfo = () => {
     axios
@@ -23,7 +35,6 @@ export default function Group() {
       })
       .then((response) => {
         console.log(response.data);
-        // const userId = localStorage.getItem("userId");
         if (response.data.success) {
           const data = { ...response.data.data };
           setGroupName(data.name);
@@ -49,9 +60,43 @@ export default function Group() {
       });
   };
 
+  const getInviteLink = () => {
+    axios
+      .get(`http://localhost:5000/groups/${id}/invitation-url`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.success) {
+          const data = { ...response.data.data };
+          setInviteUrl(data.inviteUrl);
+        } else {
+          console.log(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getGroupInfo();
+    getInviteLink();
   }, []);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const invite = () => {
+    console.log("invite");
+  };
 
   return (
     <Layout>
@@ -82,6 +127,14 @@ export default function Group() {
             alignmentBaseline: "baseline"
           }}
         >
+          <Tooltip title="invite">
+            <Button
+              icon={<PlusOutlined />}
+              size="large"
+              style={{ marginRight: 20 }}
+              onClick={showModal}
+            />
+          </Tooltip>
           <Dropdown
             menu={{
               items: [
@@ -170,6 +223,37 @@ export default function Group() {
                 })
               : null}
           </div>
+          <Modal
+            title="Invitation"
+            open={isModalOpen}
+            onCancel={handleCancel}
+            footer={[]}
+          >
+            <div>Invite Link</div>
+            <Input.Group
+              style={{
+                marginBlock: 10
+              }}
+              compact
+            >
+              <Input value={inviteUrl} />
+              {/* <Tooltip title="copy git url">
+                <Button icon={<CopyOutlined />} />
+              </Tooltip> */}
+            </Input.Group>
+            <div>Invite by Email</div>
+            <Input
+              style={{
+                marginBlock: 10
+              }}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Button type="primary" onClick={invite()}>
+              Invite
+            </Button>
+          </Modal>
         </div>
       </Content>
       {/* <Footer

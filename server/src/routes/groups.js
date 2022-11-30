@@ -24,7 +24,7 @@ router.get(
 // @route POST /:id/invitation-url
 // @desc Member join group
 // @access All
-router.get("/:id/invitation-url", GroupController.getInviteUrl);
+router.get("/:id/invitation-url", isUserAuthenticated, GroupController.getInviteUrl);
 
 // @route POST /
 // @desc Create Group
