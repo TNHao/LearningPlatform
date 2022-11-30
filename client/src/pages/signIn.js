@@ -1,120 +1,153 @@
-import React from 'react'
-import axios from 'axios'
-import { Link } from "react-router-dom";
+import React from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import {
-    Layout,
-    Menu,
-    Button,
-    Row,
-    Col,
-    Typography,
-    Form,
-    Input,
-    Switch,
-} from 'antd'
-
-
+  Layout,
+  Menu,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Form,
+  Input,
+  Switch
+} from "antd";
+import logoGoogle from "../assets/images/Google__G__Logo.svg.png";
+import { API_DOMAIN } from "../constants/urls";
+import getJson from "../utils/api/getJson";
 
 function onChange(checked) {
-    console.log(`switch to ${checked}`)
+  console.log(`switch to ${checked}`);
 }
-const { Title } = Typography
-const { Header, Footer, Content } = Layout
+const { Title } = Typography;
+const { Header, Footer, Content } = Layout;
 
 export default function SignIn() {
-    const onFinish = (values) => {
-        console.log("Success:", values);
-        axios.post('http://localhost:5000/login', {
-            email: values.email,
-            password: values.password
-        }).then((res) => {
-            console.log(res);
-        }).catch((error) => {
-            console.error(error);
-        })
-    };
+  const navigate = useNavigate();
+  const onFinish = (values) => {
+    axios
+      .post("http://localhost:5000/login", {
+        email: values.email,
+        password: values.password
+      })
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("accessToken", res.data.accessToken);
+        localStorage.setItem("user", res.data.email);
 
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-    };
+        // const data = fetch('http://localhost:5000/auth/user').then((data) => { console.log(data); });
 
-    return (
-        <Layout className="layout-default layout-signin">
-            <Content className="signin header-solid signin-bg">
-                <Row gutter={[20, 0]} justify="space-around" >
-                    <Col
-                        xs={{ span: 24, offset: 0 }}
-                        lg={{ span: 6, offset: 2 }}
-                        md={{ span: 12 }}
-                    >
-                        <Title className="mb-15">Sign In</Title>
-                        <Title className="font-regular text-muted" level={5}>
-                            Enter your email and password to sign in
-                        </Title>
-                        <Form
-                            onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
-                            layout="vertical"
-                            className="row-col"
-                        >
-                            <Form.Item
-                                className="username"
-                                label="Email"
-                                name="email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your email!',
-                                    },
-                                ]}
-                            >
-                                <Input placeholder="Email" />
-                            </Form.Item>
+        // navigate(`/user/${res.data.email}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  // const fetchUserData = async () => {
+  //     const res = await axios.get('http://localhost:5000/auth/user', { withCredentials: true }).catch((err) => {
+  //         console.log(err);
+  //     })
+  //     if (res) {
+  //         console.log(res);
+  //         localStorage.setItem("accessToken", res.accessToken);
+  //     }
+  // }
+  // const googleLogin = async () => {
+  //     const googleLoginURL = "http://localhost:5000/login/google";
+  //     const loginWindow = window.open(
+  //         googleLoginURL,
+  //         "_blank",
+  //         "width=500,height =600"
+  //     );
+  // }
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
 
-                            <Form.Item
-                                className="username"
-                                label="Password"
-                                name="password"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your password!',
-                                    },
-                                ]}
-                            >
-                                <Input.Password placeholder="Password" />
-                            </Form.Item>
+  return (
+    <Layout className="layout-default layout-signin">
+      <Content className="signin header-solid signin-bg">
+        <Row gutter={[20, 0]} justify="space-around">
+          <Col
+            xs={{ span: 24, offset: 0 }}
+            lg={{ span: 6, offset: 2 }}
+            md={{ span: 12 }}
+          >
+            <Title className="mb-15">Sign In</Title>
+            <Title className="font-regular text-muted" level={5}>
+              Enter your email and password to sign in
+            </Title>
+            <Form
+              name="basic"
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              layout="vertical"
+              className="row-col"
+            >
+              <Form.Item
+                className="username"
+                label="Email"
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your email!"
+                  }
+                ]}
+              >
+                <Input placeholder="Email" />
+              </Form.Item>
 
-                            <Form.Item
-                                name="remember"
-                                className="aligin-center"
-                                valuePropName="checked"
-                            >
-                                <Switch defaultChecked onChange={onChange} />
-                                Remember me
-                            </Form.Item>
+              <Form.Item
+                className="username"
+                label="Password"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!"
+                  }
+                ]}
+              >
+                <Input.Password placeholder="Password" />
+              </Form.Item>
 
-                            <Form.Item>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    style={{ width: '100%' }}
-                                >
-                                    SIGN IN
-                                </Button>
-                            </Form.Item>
-                            <p className="font-semibold text-muted">
-                                Dont have an account?{' '}
-                                <Link to="/sign-up" className="text-dark font-bold">
-                                    Sign Up
-                                </Link>
-                            </p>
-                        </Form>
-                    </Col>
-                </Row>
+              <Form.Item
+                name="remember"
+                className="aligin-center"
+                valuePropName="checked"
+              >
+                <Switch defaultChecked onChange={onChange} />
+                Remember me
+              </Form.Item>
 
-            </Content>
-
-        </Layout>
-    )
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: "100%" }}
+                >
+                  SIGN IN
+                </Button>
+              </Form.Item>
+              <p className="font-semibold text-muted">
+                Dont have an account?{" "}
+                <Link to="/sign-up" className="text-dark font-bold">
+                  Sign Up
+                </Link>
+              </p>
+            </Form>
+            <p className="text-center my-25 font-semibold text-muted">
+              Or Login with
+            </p>
+            <div className="sign-up-gateways">
+              <Button type="false" className=" ant-btn" onClick={{}}>
+                <img src={logoGoogle} alt="logo 3" />
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Content>
+    </Layout>
+  );
 }
