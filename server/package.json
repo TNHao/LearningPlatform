@@ -2,10 +2,10 @@
   "name": "server",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "start-dev": "NODE_ENV=development & nodemon --exec babel-node src/index.js",
+    "start": "node ./index.js",
+    "start-dev": "NODE_ENV=development & nodemon --exec babel-node index.js",
     "lintfix": "eslint src --fix --cache"
   },
   "dependencies": {

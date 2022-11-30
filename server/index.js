@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 require('custom-env').env();
-var app = require('./app');
+var app = require('./src/app');
 var debug = require('debug')('server:server');
 var http = require('http');
 
