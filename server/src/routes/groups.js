@@ -14,7 +14,7 @@ router.get("/", isUserAuthenticated, GroupController.getAllByUserId);
 // @desc Show Group
 // @access Private and role ADMINISTRATOR or MANAGER
 router.get(
-  "/:id",
+  "/:id", isUserAuthenticated,
   (req, res, next) => {
     roleCheckMW(req, res, next, ["owner"]);
   },
@@ -24,7 +24,7 @@ router.get(
 // @route POST /:id/invitation-url
 // @desc Member join group
 // @access All
-router.get("/:id/invitation-url", GroupController.getInviteUrl);
+router.get("/:id/invitation-url", isUserAuthenticated, GroupController.getInviteUrl);
 
 // @route POST /
 // @desc Create Group

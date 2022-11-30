@@ -86,3 +86,20 @@ export const findUserByEmail = async (email, callbacks) => {
     throw error;
   }
 };
+
+/**
+ *
+ * @param {userIds} userIds
+ * @param {{success: (data) => void, error: (e) => void}} callbacks
+ * @returns updated user info
+ */
+ export const findUserByIds = async (userIds, callbacks) => {
+  try {
+    const users = await User.find({ _id: { $in: userIds } });
+    callbacks?.success(users);
+    return users;
+  } catch (error) {
+    callbacks?.error(error);
+    throw error;
+  }
+};
