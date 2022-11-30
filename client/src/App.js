@@ -28,7 +28,7 @@ export default function App() {
                 <Route path="/verify-success" element={<VerifySuccessPage />} />
                 <Route path="/group/invite" element={isLogin ? <JoinGroup /> : <Navigate replace to="/sign-in" />} />
                 <Route path="/home" element={isLogin ? <Home /> : <Navigate replace to="/sign-in" />} />
-                <Route path="/group" element={isLogin ? <Group /> : <Navigate replace to="/sign-in" />} />
+                <Route path="/group/:id" element={isLogin ? <Group /> : <Navigate replace to="/sign-in" />} />
             </Routes>
         </div>
     );

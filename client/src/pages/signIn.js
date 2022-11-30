@@ -31,9 +31,11 @@ export default function SignIn() {
         password: values.password
       })
       .then((res) => {
-        console.log(res);
-        localStorage.setItem("accessToken", res.data.accessToken);
-        localStorage.setItem("user", res.data.email);
+        const data = { ...res.data.data };
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("userName", data.user.name);
+        localStorage.setItem("userEmail", data.user.email);
 
         // const data = fetch('http://localhost:5000/auth/user').then((data) => { console.log(data); });
 
