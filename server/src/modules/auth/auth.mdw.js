@@ -51,7 +51,7 @@ export const isUserAuthenticated = async (req, res, next) => {
     if (req.headers.authorization) {
         const jwt = req.headers.authorization;
         try {
-            const userInfo = decodeToken(jwt, process.env.ACCESS_TOKEN_SECRET)
+            const userInfo = await decodeToken(jwt, process.env.ACCESS_TOKEN_SECRET)
             const { id, email } = userInfo.payload;
             req.id = id;
             req.email = email;
