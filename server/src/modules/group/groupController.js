@@ -160,7 +160,8 @@ export const postInvite = async (req, res) => {
             },
             {
               success: async (invitation) => {
-                const genLink = req.protocol + "://" + req.get("host") + `/groups/invite/group=${groupId}&code=${invitation.key}`;
+                const clientDomain = req.get("origin") ? req.get("origin") + "/" : req.get("referer");
+                const genLink = req.protocol + "://" + clientDomain + `groups/invite/group=${groupId}&code=${invitation.key}`;
                 await sendInvitationMail(owner.name, "Group", [email], genLink);
               },
               error: (error) => {
