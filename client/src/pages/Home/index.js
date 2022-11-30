@@ -125,7 +125,7 @@ export default function Home() {
             menu={{
               items: [
                 {
-                  label: <a href="/profile">Profile</a>,
+                  label: <a href="/user">Profile</a>,
                   key: "0"
                 },
                 {
@@ -161,19 +161,19 @@ export default function Home() {
           <div>
             {groups.length != 0
               ? groups.map(function mapGroup(group) {
-                  return (
-                    <Card
-                      key={group.id}
-                      title={<a href={group.link}>{group.name} Group</a>}
-                      style={{
-                        marginInline: 200,
-                        marginBlock: 20
-                      }}
-                    >
-                      Your role: {group.yourRole}
-                    </Card>
-                  );
-                })
+                return (
+                  <Card
+                    key={group.id}
+                    title={<a href={group.link}>{group.name} Group</a>}
+                    style={{
+                      marginInline: 200,
+                      marginBlock: 20
+                    }}
+                  >
+                    Your role: {group.yourRole}
+                  </Card>
+                );
+              })
               : null}
           </div>
           <Modal
