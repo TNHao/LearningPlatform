@@ -119,7 +119,8 @@ export const postCreate = async (req, res) => {
             { isPublic: true, group: group._id },
             {
               success: (invitation) => {
-                const genLink = `${req.protocol}://${req.get("host")}/groups/invite/group=${group._id}&code=${invitation.key}`;
+                const clientDomain = req.get("origin") ? req.get("origin") + "/" : req.get("referer");
+                const genLink = clientDomain + `groups/invite?group=${groupId}&code=${invitation.key}`;
                 res.status(200).json({ success: true, data: { group, inviteUrl: genLink } });
               },
               error: (error) => {
@@ -150,7 +151,9 @@ export const postCreate = async (req, res) => {
  * @returns void
  */
 export const postInvite = async (req, res) => {
-  const { groupId, userId, emails } = req.body;
+  const { groupId, emails } = req.body;
+  const userId = req.id;
+
   try {
     let success = true;
     findUserById(userId, {
@@ -165,7 +168,7 @@ export const postInvite = async (req, res) => {
             {
               success: async (invitation) => {
                 const clientDomain = req.get("origin") ? req.get("origin") + "/" : req.get("referer");
-                const genLink = req.protocol + "://" + clientDomain + `groups/invite/group=${groupId}&code=${invitation.key}`;
+                const genLink = clientDomain + `groups/invite?group=${groupId}&code=${invitation.key}`;
                 await sendInvitationMail(owner.name, "Group", [email], genLink);
               },
               error: (error) => {
@@ -289,7 +292,8 @@ export const getInviteUrl = async (req, res) => {
 
   getInvitationPublic(groupId, {
     success: (invitation) => {
-      const genLink = `${req.protocol}://${req.get("host")}/groups/invite/group=${groupId}&code=${invitation.key}`;
+      const clientDomain = req.get("origin") ? req.get("origin") + "/" : req.get("referer");
+      const genLink = clientDomain + `groups/invite?group=${groupId}&code=${invitation.key}`;
       res.status(200).json({ success: true, data: { inviteUrl: genLink } });
     },
     error: (error) => {
@@ -302,9 +306,10 @@ export const getInviteUrl = async (req, res) => {
 };
 
 export const deleteRemoveMember = async (req, res) => {
-  const { id: groupId } = req.params;
-  const { userId } = req.body;
+  const { id: groupId, userId } = req.params;
+  // const { userId } = req.body;
 
+  console.log(groupId, userId);
   removeMember(groupId, userId, {
     success: (group) => {
       res.status(200).json({ success: true, data: group });

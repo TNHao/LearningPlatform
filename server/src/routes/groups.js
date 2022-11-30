@@ -39,7 +39,7 @@ router.post("/:id/join-group", GroupController.postJoinGroup);
 // @route POST /invite
 // @desc Invite Member
 // @access Private and role ADMINISTRATOR
-router.post("/invite", GroupController.postInvite);
+router.post("/invite", isUserAuthenticated, GroupController.postInvite);
 
 // @route PUT /:id
 // @desc Update Group
@@ -54,6 +54,6 @@ router.delete("/:id", GroupController.deleteRemove);
 // @route DELETE /:id
 // @desc Delete Group
 // @access Private and role ADMINISTRATOR
-router.delete("/:id/remove-member", GroupController.deleteRemoveMember);
+router.get("/:id/remove-member/:userId", isUserAuthenticated, GroupController.deleteRemoveMember);
 
 module.exports = router;
