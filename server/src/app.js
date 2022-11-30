@@ -13,7 +13,7 @@ const groupsRouter = require('./routes/groups');
 const { default: useDatabase } = require('./services/database');
 
 const corsOptions = {
-  origin: 'https://learning-platform-tnhao.vercel.app',
+  origin: '*',
   credentials: true,
   optionSuccessStatus: 200,
 }
