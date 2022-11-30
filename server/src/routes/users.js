@@ -1,14 +1,17 @@
 const express = require("express");
-const { activeAccount } = require("../modules/user/userController");
+const { isUserAuthenticated } = require("../modules/auth/auth.mdw");
+const { activeAccount, getUserInfo } = require("../modules/user/userController");
+const { findUserById } = require("../modules/user/userModel");
+const emailTemplate = require("../utils/emailTemplate");
 
 
 const router = express.Router();
 
 /* GET users listing. */
-router.get("/", (req, res, next) => {
-  res.send({ a: "user page" });
+router.get("/", isUserAuthenticated, async (req, res) => {
+  getUserInfo(req, res);
 });
-router.get("/:email", (req, res, next) => {
+router.get("/", (req, res, next) => {
   console.log(req.body);
 })
 router.get("/verify", async (req, res, next) => {

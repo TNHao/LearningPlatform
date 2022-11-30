@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 
 const { Header, Content, Footer } = Layout;
@@ -20,6 +21,8 @@ export default function Home() {
   const [groupName, setGroupName] = useState("");
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const getAllGroup = () => {
     axios
@@ -82,7 +85,10 @@ export default function Home() {
         console.log(error);
       });
   };
-
+  const logout = () => {
+    localStorage.clear();
+    navigate("/login");
+  }
   const handleCancel = () => {
     setGroupName("");
     setIsModalOpen(false);
@@ -132,7 +138,7 @@ export default function Home() {
                   type: "divider"
                 },
                 {
-                  label: <a href="/sign-in">Logout</a>,
+                  label: <a onClick={logout}>Logout</a>,
                   key: "2"
                 }
               ]

@@ -25,7 +25,8 @@ export const createAccount = async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        isActive: false
+        isActive: false,
+        avatarURL: "",
     }
     createUser(newUser, {
         success: async (user) => {

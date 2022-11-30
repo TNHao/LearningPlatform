@@ -1,5 +1,5 @@
 import { useState, React, useEffect } from "react";
-
+import axios from "axios";
 import {
   Row,
   Col,
@@ -15,12 +15,13 @@ import {
 } from "antd";
 
 import {
-  FacebookOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  VerticalAlignTopOutlined
+  VerticalAlignTopOutlined,
+  LogoutOutlined,
+  PlusOutlined,
+  SettingOutlined
 } from "@ant-design/icons";
 
+import { useNavigate } from "react-router-dom";
 import BgProfile from "../assets/images/bg-profile.jpg";
 import profilavatar from "../assets/images/face-1.jpg";
 import convesionImg from "../assets/images/face-3.jpg";
@@ -28,49 +29,32 @@ import convesionImg2 from "../assets/images/face-4.jpg";
 import convesionImg3 from "../assets/images/face-5.jpeg";
 import convesionImg4 from "../assets/images/face-6.jpeg";
 import convesionImg5 from "../assets/images/face-2.jpg";
-import project1 from "../assets/images/home-decor-1.jpeg";
-import project2 from "../assets/images/home-decor-2.jpeg";
-import project3 from "../assets/images/home-decor-3.jpeg";
+
 import getJson from "../utils/api/getJson";
 import { API_DOMAIN } from "../constants/urls";
 
 function Profile() {
-  const [imageURL, setImageURL] = useState(false);
-  const [, setLoading] = useState(false);
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(false);
-      return;
-    }
-    if (info.file.status === "done") {
-      getBase64(info.file.originFileObj, (imageUrl) => {
-        setLoading(false);
-        setImageURL(false);
-      });
-    }
-  };
+  const [userInfo, setUserInfo] = useState({});
+  const navigate = useNavigate();
   useEffect(() => {
     const email = localStorage.getItem("user");
-    getJson(API_DOMAIN, "/users", {});
-  });
+    axios.get(
+      "http://localhost:5000/users",
+      {
+        headers: {
+          Authorization: localStorage.getItem("accessToken")
+        }
+      }, { withCredentials: true }
+    )
+      .then((response) => {
+        console.log(response.data);
+        setUserInfo(response.data.user)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [])
   const pencil = [
     <svg
       width="20"
@@ -90,13 +74,10 @@ function Profile() {
       />
     </svg>
   ];
-
-  const uploadButton = (
-    <div className="ant-upload-text font-semibold text-dark">
-      <VerticalAlignTopOutlined style={{ width: 20, color: "#000" }} />
-      <div>Upload New Project</div>
-    </div>
-  );
+  const logout = () => {
+    localStorage.clear();
+    navigate("/login");
+  }
 
   const data = [
     {
@@ -115,30 +96,8 @@ function Profile() {
       description: "Môn XYZ"
     }
   ];
+  const defaultAvatar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROdEaZteLTepbACoy3MjSfAsulnfciHnp4nw&usqp=CAU'
 
-  const project = [
-    {
-      img: project1,
-      titlesub: "Project #1",
-      title: "Modern",
-      disciption:
-        "As Uber works through a huge amount of internal management turmoil."
-    },
-    {
-      img: project2,
-      titlesub: "Project #2",
-      title: "Scandinavian",
-      disciption:
-        "Music is something that every person has his or her own specific opinion about."
-    },
-    {
-      img: project3,
-      titlesub: "Project #3",
-      title: "Minimalist",
-      disciption:
-        "Different people have different taste, and various types of music, Zimbali Resort"
-    }
-  ];
 
   return (
     <>
@@ -154,11 +113,11 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                <Avatar size={74} shape="square" src={profilavatar} />
+                <Avatar size={74} shape="square" src={userInfo.avatarURL ? userInfo.avatarURL : defaultAvatar} />
 
                 <div className="avatar-info">
-                  <h4 className="font-semibold m-0">Hào Nhật Trần</h4>
-                  <p>Sinh viên</p>
+                  <h4 className="font-semibold m-0">{userInfo.name}</h4>
+                  <p>Role</p>
                 </div>
               </Avatar.Group>
             </Col>
@@ -172,9 +131,9 @@ function Profile() {
               }}
             >
               <Radio.Group defaultValue="a">
-                <Radio.Button value="a">OVERVIEW</Radio.Button>
-                <Radio.Button value="b">TEAMS</Radio.Button>
-                <Radio.Button value="c">PROJECTS</Radio.Button>
+                <Button value="a"><PlusOutlined /></Button>
+                <Button value="b"><SettingOutlined /></Button>
+                <Button onClick={logout}><LogoutOutlined /></Button>
               </Radio.Group>
             </Col>
           </Row>
@@ -182,50 +141,7 @@ function Profile() {
       />
 
       <Row gutter={[24, 0]}>
-        <Col span={24} md={8} className="mb-24 ">
-          <Card
-            bordered={false}
-            className="header-solid h-full"
-            title={<h6 className="font-semibold m-0">Platform Settings</h6>}
-          >
-            <ul className="list settings-list">
-              <li>
-                <h6 className="list-header text-sm text-muted">ACCOUNT</h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-
-                <span>Email me when someone follows me</span>
-              </li>
-              <li>
-                <Switch />
-                <span>Email me when someone answers me</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Email me when someone mentions me</span>
-              </li>
-              <li>
-                <h6 className="list-header text-sm text-muted m-0">
-                  APPLICATION
-                </h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>New launches and projects</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Monthly product updates</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Subscribe to newsletter</span>
-              </li>
-            </ul>
-          </Card>
-        </Col>
-        <Col span={24} md={8} className="mb-24">
+        <Col span={24} md={4} className="mb-24 ">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Profile Information</h6>}
@@ -233,31 +149,22 @@ function Profile() {
             extra={<Button type="link">{pencil}</Button>}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
-            <p className="text-dark">
-              {" "}
-              Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
-              is no. If two equally difficult paths, choose the one more painful
-              in the short term (pain avoidance is creating an illusion of
-              equality).{" "}
-            </p>
+
             <hr className="my-25" />
-            <Descriptions title="Oliver Liam">
+            <Descriptions >
               <Descriptions.Item label="Full Name" span={3}>
-                Sarah Emily Jacob
+                {userInfo.name}
               </Descriptions.Item>
-              <Descriptions.Item label="Mobile" span={3}>
-                (44) 123 1234 123
-              </Descriptions.Item>
+
               <Descriptions.Item label="Email" span={3}>
-                sarahjacob@mail.com
+                {userInfo.email}
               </Descriptions.Item>
-              <Descriptions.Item label="Location" span={3}>
-                USA
-              </Descriptions.Item>
+
             </Descriptions>
           </Card>
         </Col>
-        <Col span={24} md={8} className="mb-24">
+
+        <Col span={24} md={16} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Groups</h6>}
@@ -284,62 +191,7 @@ function Profile() {
           </Card>
         </Col>
       </Row>
-      <Card
-        bordered={false}
-        className="header-solid mb-24"
-        title={
-          <>
-            <h6 className="font-semibold">Projects</h6>
-            <p>Architects design houses</p>
-          </>
-        }
-      >
-        <Row gutter={[24, 24]}>
-          {project.map((p) => (
-            <Col span={24} md={12} xl={6} key={p.id}>
-              <Card
-                bordered={false}
-                className="card-project"
-                cover={<img alt="example" src={p.img} />}
-              >
-                <div className="card-tag">{p.titlesub}</div>
-                <h5>{p.titile}</h5>
-                <p>{p.disciption}</p>
-                <Row gutter={[6, 0]} className="card-footer">
-                  <Col span={12}>
-                    <Button type="button">VIEW PROJECT</Button>
-                  </Col>
-                  <Col span={12} className="text-right">
-                    <Avatar.Group className="avatar-chips">
-                      <Avatar size="small" src={profilavatar} />
-                      <Avatar size="small" src={convesionImg} />
-                      <Avatar size="small" src={convesionImg2} />
-                      <Avatar size="small" src={convesionImg3} />
-                    </Avatar.Group>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          ))}
-          <Col span={24} md={12} xl={6}>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader projects-uploader"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
-            >
-              {imageURL ? (
-                <img src={imageURL} alt="avatar" style={{ width: "100%" }} />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
-          </Col>
-        </Row>
-      </Card>
+
     </>
   );
 }
